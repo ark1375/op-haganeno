@@ -8,12 +8,14 @@
 import PIL as pil
 from PIL import Image
 import numpy as np
+from os import listdir
+# from keras.preprocessing.image import load_img
 
 
 
 #location of the files
 
-locs = {'loc_train' : r"./data/single_data/train/" , 'loc_test' : r"./data/single_data/test/"}
+locs = {'loc_train' : r"./data/mnist_png/training/0/" , 'loc_test' : r"./data/mnist_png/testing/0/"}
 
 #A function for loading the image as a numpy ndarray
 def load(name, tr_ts):
@@ -31,6 +33,36 @@ def set_locs(trainloc, testloc):
     locs['loc_train'] = trainloc
     locs['loc_test'] = testloc
 
-print(load("id_5_label_4.png" , "loc_train"))
+def section(img , factor = 2):
+    secs = []
 
+    if (img.shape[0] % factor != 0):
+        return False
+
+    pix_num = int(img.shape[0] / factor)
+    ptr_x_a = 0
+    ptr_x_b = pix_num -1
+
+
+    for i in range(factor):
+
+        ptr_y_a = 0
+        ptr_y_b = pix_num - 1
+        
+        for j in range(factor):
+
+            secs.append( img[ptr_x_a :ptr_x_b , ptr_y_a : ptr_y_b] )
+            ptr_y_a += pix_num
+            ptr_y_b += pix_num
+    
+        ptr_x_a += pix_num
+        ptr_x_b += pix_num
+    
+    return np.array(secs , dtype = "int16")
+    # for 
+
+ls_dir = listdir(locs['loc_train'])
+for i in ls_dir:
+    a = load(i , "loc_train")
+    section(a)
 
