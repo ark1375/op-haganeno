@@ -15,9 +15,7 @@ import numpy as np
 
 locs = {'loc_train' : r"./data/single_data/train/" , 'loc_test' : r"./data/single_data/test/"}
 
-"""
-A function for loading the image as a numpy ndarray
-"""
+#A function for loading the image as a numpy ndarray
 def load(name, tr_ts):
 
     loc = locs[tr_ts]
@@ -28,6 +26,7 @@ def load(name, tr_ts):
     if (data.shape == (28,28)):
         return data
 
+#seting the location of train and test files
 def set_locs(trainloc, testloc):
     locs['loc_train'] = trainloc
     locs['loc_test'] = testloc
