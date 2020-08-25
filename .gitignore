@@ -1,3 +1,5 @@
 sectioning/bin
 sectioning/lib
 sectioning/pyvenv.cfg
+sectioning/data
+.vscode/
