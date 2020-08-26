@@ -1,7 +1,7 @@
 """
     Author: ARK1375
     Date:   24 Aug 2020
-    Mod:    25 Aug 2020     19:27
+    Mod:    26 Aug 2020     23:27
     Description:
 
 """
@@ -34,23 +34,41 @@ def set_locs(trainloc, testloc):
     locs['loc_test'] = testloc
 
 def section(img , factor = 2):
-    secs = []
 
     if (img.shape[0] % factor != 0):
         return False
     
     pix_size = int(img.shape[0] / factor)
 
-    img_shape = img.shape
     trans_1 = img.reshape(factor, pix_size , factor , pix_size)
     trans_2 = trans_1.transpose(0,2,1,3)
     trans_3 = trans_2.reshape(-1, pix_size, pix_size)
 
     return trans_3
 
+def calc_vectors(secs , tolarance):
 
-ls_dir = listdir(locs['loc_train'])
-for i in ls_dir:
-    a = load(i , "loc_train")
-    section(a)
+    num_pix = secs[0].shape[0]
+
+    for sec in secs:
+    
+        indexs = np.where(sec > tolarance)
+        
+        # lower performance but probably works o.k
+        # shape = [ ( indexs[0][i], indexs[1][i] ) for i in range( len(indexs[0]) )]
+        shape = np.concatenate(indexs).reshape(2, indexs[0].size).transpose(1,0)
+
+
+        print(shape)
+
+    return shape
+
+
+a = load("1.png" , "loc_train")
+se = calc_vectors(section(a), 10)
+
+# ls_dir = listdir(locs['loc_train'])
+# for i in ls_dir:
+#     a = load(i , "loc_train")
+#     section(a)
 
