@@ -38,28 +38,16 @@ def section(img , factor = 2):
 
     if (img.shape[0] % factor != 0):
         return False
-
-    pix_num = int(img.shape[0] / factor)
-    ptr_x_a = 0
-    ptr_x_b = pix_num -1
-
-
-    for i in range(factor):
-
-        ptr_y_a = 0
-        ptr_y_b = pix_num - 1
-        
-        for j in range(factor):
-
-            secs.append( img[ptr_x_a :ptr_x_b , ptr_y_a : ptr_y_b] )
-            ptr_y_a += pix_num
-            ptr_y_b += pix_num
     
-        ptr_x_a += pix_num
-        ptr_x_b += pix_num
-    
-    return np.array(secs , dtype = "int16")
-    # for 
+    pix_size = int(img.shape[0] / factor)
+
+    img_shape = img.shape
+    trans_1 = img.reshape(factor, pix_size , factor , pix_size)
+    trans_2 = trans_1.transpose(0,2,1,3)
+    trans_3 = trans_2.reshape(-1, pix_size, pix_size)
+
+    return trans_3
+
 
 ls_dir = listdir(locs['loc_train'])
 for i in ls_dir:
