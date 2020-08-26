@@ -9,7 +9,8 @@ import PIL as pil
 from PIL import Image
 import numpy as np
 from os import listdir
-# from keras.preprocessing.image import load_img
+import math as mp
+
 
 
 
@@ -53,19 +54,22 @@ def calc_vectors(secs , tolarance):
     for sec in secs:
     
         indexs = np.where(sec > tolarance)
-        
         # lower performance but probably works o.k
-        # shape = [ ( indexs[0][i], indexs[1][i] ) for i in range( len(indexs[0]) )]
-        shape = np.concatenate(indexs).reshape(2, indexs[0].size).transpose(1,0)
+        # shape1 = [ ( indexs[0][i], indexs[1][i] ) for i in range( len(indexs[0]) )]
+        indexs = np.concatenate(indexs).reshape(2, indexs[0].size).transpose(1,0)
+        indexs[:,1] -= mp.ceil(num_pix/2)
+        indexs[:,0] *= -1
+        indexs[:,0] += mp.ceil(num_pix/2)
+
+        
 
 
-        print(shape)
-
-    return shape
+    return indexs
 
 
 a = load("1.png" , "loc_train")
 se = calc_vectors(section(a), 10)
+print(se)
 
 # ls_dir = listdir(locs['loc_train'])
 # for i in ls_dir:
