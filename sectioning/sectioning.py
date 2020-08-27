@@ -10,6 +10,7 @@ from PIL import Image
 import numpy as np
 from os import listdir
 import math as mp
+import matplotlib.pyplot as plt
 
 
 
@@ -50,29 +51,54 @@ def section(img , factor = 2):
 def calc_vectors(secs , tolarance):
 
     num_pix = secs[0].shape[0]
-
+    sections = []
     for sec in secs:
     
         indexs = np.where(sec > tolarance)
-        # lower performance but probably works o.k
+
+        # !lower performance but probably works o.k
         # shape1 = [ ( indexs[0][i], indexs[1][i] ) for i in range( len(indexs[0]) )]
+
         indexs = np.concatenate(indexs).reshape(2, indexs[0].size).transpose(1,0)
         indexs[:,1] -= mp.ceil(num_pix/2)
         indexs[:,0] *= -1
         indexs[:,0] += mp.ceil(num_pix/2)
+        # TODO: We can use the non-zero index here by just adding a 1 to apropriate indexies
 
+        norms = indexs.copy()
+        norms **= 2
+        norms = np.sum(norms , axis = 1)
+        norms = np.concatenate((norms,norms)).reshape(2 , len(norms) ).transpose(1,0)
+
+        normaled = indexs / (np.where(norms == 0 , 1000000 , norms))
+        fin_vector = np.sum(normaled , axis = 0)
+        sections.append(fin_vector)
+
+        #TODO: We can normalize the final vector but because of showing the pixel density propertis, we refused to do that for now
+        # fin_vector_norm =  fin_vector[0]*fin_vector[0] + fin_vector[1]*fin_vector[1]
+        # fin_vector /= fin_vector_norm
         
+    return np.array(sections)
 
 
-    return indexs
-
-
+# ?Imort one element
 a = load("1.png" , "loc_train")
-se = calc_vectors(section(a), 10)
-print(se)
+sections = section(a , factor = 2)
+se = calc_vectors(sections, 10)
 
+# ?Ploting vectors
+# origin = np.zeros(se.shape[0] , dtype = "int16")
+# plt.quiver(origin , origin ,se[:,0] , se[:,1] , scale = 1)
+# plt.show()
+
+#?Ploting Points
+# plt.plot(origin ,se[:,0],se[:,1] ,'ro')
+# plt.show()
+
+# ?Imorting
 # ls_dir = listdir(locs['loc_train'])
 # for i in ls_dir:
 #     a = load(i , "loc_train")
-#     section(a)
+#     sections = section(a)
+#     se = calc_vectors(sections, 10)
 
