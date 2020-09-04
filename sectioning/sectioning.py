@@ -1,7 +1,7 @@
 """
     Author: ARK1375
     Create: 24 Aug 2020
-    Mod:    27 Aug 2020     13:02
+    Mod:    04 Sep 2020 19:49
     Description:
 
 """
@@ -11,18 +11,19 @@ import numpy as np
 from os import listdir
 import math as mp
 import matplotlib.pyplot as plt
+import time
 
 
 
 
 #location of the files
 
-locs = {'loc_train' : r"./data/mnist_png/training/0/" , 'loc_test' : r"./data/mnist_png/testing/0/"}
+locs = {'loc_train' : r"./data/mnist_png/training/" , 'loc_test' : r"./data/mnist_png/testing/"}
 
 #A function for loading the image as a numpy ndarray
-def load(name, tr_ts):
+def load(name, address):
 
-    loc = locs[tr_ts]
+    loc = address
     
     image = Image.open(loc+name)
     data = np.asarray(image)
@@ -80,11 +81,66 @@ def calc_vectors(secs , tolarance):
         
     return np.array(sections)
 
+def get_training_data():
+
+    data , labels = [] , []
+    
+    localtime = time.asctime( time.localtime(time.time()) )
+    print (localtime)
+
+    for i in range(10):
+
+        address = locs['loc_train'] + f"{i}/"
+        ls_dir = listdir(address)
+
+        for name in ls_dir:
+            img = load(name, address)
+            sections = section(img , factor = 4)
+            vecs = calc_vectors(sections, 10)
+            out = np.zeros(shape=(10,))
+            out[i] = 1
+            data.append(vecs)
+            labels.append(out)
+    
+    localtime = time.asctime( time.localtime(time.time()) )
+    print (localtime)
+
+    return np.array(data) , np.array(labels)
+
+def get_testing_data():
+    localtime = time.asctime( time.localtime(time.time()) )
+    print (localtime)
+
+    data , labels = [] , []
+
+    for i in range(10):
+        
+        address = locs['loc_test'] + f"{i}/"
+        ls_dir = listdir(address)
+
+        for name in ls_dir:
+            img = load(name, address)
+            sections = section(img , factor = 4)
+            vecs = calc_vectors(sections, 10)
+            out = np.zeros(shape=(10,))
+            out[i] = 1
+            data.append(vecs)
+            labels.append(out)
+    
+    localtime = time.asctime( time.localtime(time.time()) )
+    print (localtime)
+
+    return np.array(data).astype('float16') , np.array(labels).astype('float16')
+
+ 
+# load_ds = get_training_data()
+# print(load_ds[0])
 
 # ?Imort one element
-a = load("1.png" , "loc_train")
-sections = section(a , factor = 2)
-se = calc_vectors(sections, 10)
+# a = load("1.png" , "loc_train")
+# sections = section(a , factor = 2)
+# se = calc_vectors(sections, 10)
+# print(se.shape)
 
 # ?Ploting vectors
 # origin = np.zeros(se.shape[0] , dtype = "int16")
