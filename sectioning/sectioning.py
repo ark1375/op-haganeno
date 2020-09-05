@@ -1,10 +1,11 @@
 """
     Author: ARK1375
     Create: 24 Aug 2020
-    Mod:    04 Sep 2020 19:49
+    Mod:    05 Sep 2020 23:11
     Description:
 
 """
+
 import PIL as pil
 from PIL import Image
 import numpy as np
@@ -13,11 +14,7 @@ import math as mp
 import matplotlib.pyplot as plt
 import time
 
-
-
-
 #location of the files
-
 locs = {'loc_train' : r"./data/mnist_png/training/" , 'loc_test' : r"./data/mnist_png/testing/"}
 
 #A function for loading the image as a numpy ndarray
@@ -71,13 +68,14 @@ def calc_vectors(secs , tolarance):
         norms = np.sum(norms , axis = 1)
         norms = np.concatenate((norms,norms)).reshape(2 , len(norms) ).transpose(1,0)
 
-        normaled = indexs / (np.where(norms == 0 , 1000000 , norms))
+        normaled = indexs / (np.where(norms == 0 , 1000000 , np.sqrt(norms)))
         fin_vector = np.sum(normaled , axis = 0)
+
         sections.append(fin_vector)
 
         #TODO: We can normalize the final vector but because of showing the pixel density propertis, we refused to do that for now
-        # fin_vector_norm =  fin_vector[0]*fin_vector[0] + fin_vector[1]*fin_vector[1]
-        # fin_vector /= fin_vector_norm
+        # fin_vector_norm =  (fin_vector[0]*fin_vector[0] + fin_vector[1]*fin_vector[1])
+        # fin_vector /= ( np.where(fin_vector_norm == 0 , 1000000 , fin_vector_norm) )
         
     return np.array(sections)
 
@@ -96,7 +94,7 @@ def get_training_data():
         for name in ls_dir:
             img = load(name, address)
             sections = section(img , factor = 4)
-            vecs = calc_vectors(sections, 10)
+            vecs = calc_vectors(sections, 150)
             out = i
             data.append(vecs.reshape(32))
             labels.append(out)
@@ -104,7 +102,7 @@ def get_training_data():
     localtime = time.asctime( time.localtime(time.time()) )
     print (localtime)
 
-    return np.array(data) , np.array(labels)
+    return np.array(data).astype('float32') , np.array(labels).astype('float32')
 
 def get_testing_data():
     localtime = time.asctime( time.localtime(time.time()) )
@@ -120,7 +118,7 @@ def get_testing_data():
         for name in ls_dir:
             img = load(name, address)
             sections = section(img , factor = 4)
-            vecs = calc_vectors(sections, 10)
+            vecs = calc_vectors(sections, 50)
             out = i
             data.append(vecs.reshape(32))
             labels.append(out)
@@ -128,7 +126,7 @@ def get_testing_data():
     localtime = time.asctime( time.localtime(time.time()) )
     print (localtime)
 
-    return np.array(data).astype('float16') , np.array(labels).astype('float16')
+    return np.array(data).astype('float32') , np.array(labels).astype('float32')
 
  
 # load_ds = get_training_data()
