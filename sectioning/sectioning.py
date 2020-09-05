@@ -97,9 +97,8 @@ def get_training_data():
             img = load(name, address)
             sections = section(img , factor = 4)
             vecs = calc_vectors(sections, 10)
-            out = np.zeros(shape=(10,))
-            out[i] = 1
-            data.append(vecs)
+            out = i
+            data.append(vecs.reshape(32))
             labels.append(out)
     
     localtime = time.asctime( time.localtime(time.time()) )
@@ -122,9 +121,8 @@ def get_testing_data():
             img = load(name, address)
             sections = section(img , factor = 4)
             vecs = calc_vectors(sections, 10)
-            out = np.zeros(shape=(10,))
-            out[i] = 1
-            data.append(vecs)
+            out = i
+            data.append(vecs.reshape(32))
             labels.append(out)
     
     localtime = time.asctime( time.localtime(time.time()) )

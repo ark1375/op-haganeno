@@ -3,3 +3,5 @@ sectioning/lib
 sectioning/pyvenv.cfg
 sectioning/data
 .vscode/
+sectioning/__pycache__/
+sectioning/Scripts/
