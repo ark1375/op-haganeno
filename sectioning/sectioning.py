@@ -118,7 +118,7 @@ def get_testing_data():
         for name in ls_dir:
             img = load(name, address)
             sections = section(img , factor = 4)
-            vecs = calc_vectors(sections, 50)
+            vecs = calc_vectors(sections, 150)
             out = i
             data.append(vecs.reshape(32))
             labels.append(out)

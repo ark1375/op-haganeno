@@ -168,8 +168,6 @@ def learn_raw():
     print(f"\n\nlabels = {y_test[indx_test[:10]]}")
 
 
-# learn_raw()
-learn_by_sectioning()
 
 
 
